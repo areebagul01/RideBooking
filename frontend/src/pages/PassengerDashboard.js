@@ -16,14 +16,23 @@ const PassengerDashboard = () => {
   useEffect(() => {
     const fetchRides = async () => {
       try {
-        const activeRes = await axios.get(`http://localhost:5000/api/rides/active/${user.id}`);
-        setActiveRide(activeRes.data);
+        // Fetch active ride (ignore 404 errors)
+        try {
+          const activeRes = await axios.get(`http://localhost:5000/api/rides/active/${user.id}`);
+          setActiveRide(activeRes.data);
+        } catch (activeErr) {
+          if (activeErr.response?.status !== 404) {
+            throw activeErr;
+          }
+        }
         
+        // Fetch ride history
         const historyRes = await axios.get(`http://localhost:5000/api/rides/history/${user.id}`);
+        console.log('History response:', historyRes.data);
         setRideHistory(historyRes.data);
       } catch (err) {
         if (err.response?.status !== 404) {
-          setError('Failed to fetch rides');
+          setError('Failed to fetch rides: ' + err.message);
         }
       } finally {
         setLoading(false);

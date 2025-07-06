@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { useState } from 'react';
 
 const RideRequest = ({ onRequest }) => {
